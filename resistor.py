@@ -39,7 +39,7 @@ def serie(lista):
     """
     resultado = 0
     for i in range(0,len(lista)):
-        resultado += lista[i]
+        resultado = resultado + lista[i]
     return resultado
 def paralelo(lista):
     """
@@ -48,7 +48,7 @@ def paralelo(lista):
     """
     resultado = 0
     for i in range(0,len(lista)):
-        resultado += (1/lista[i])
+        resultado = resultado + (1/lista[i])
     return (1/resultado)
 def dividendo(lista,n):
     """
@@ -57,9 +57,9 @@ def dividendo(lista,n):
     """
     res = 1
     for i in range(len(lista)):
-        if i == n:
-            pass
-        res = res * lista[i]
+        if i != n:
+            res = res * lista[i]
+        
     return res
 def divisor(listaR):
     """
@@ -70,27 +70,30 @@ def divisor(listaR):
     combinados = combinaciones(listaR,len(listaR)-1)
     suma = 0
     for i in range(len(combinados)):
+        multi = 1
         for j in range(len(combinados[i])):
-            suma += combinados[i][j]
+            multi *= combinados[i][j]
+        suma += multi
     return suma
 def tolerancia(listaR,listaTol):
     """
-    En teoria calcula la tolerancia
-    SIGUE SIN SER PUESTO A PRUEBA
+    Calcula la tolerancia
+    
 
     """
     size = len(listaR)
     wRes=0
     if size == 1:
-        w = listaTol[0]*listaR[0]
-        w = w*w
+        w = (listaTol[0]/100)
+        w = w**2
         return w
     for i in range(len(listaR)):
         aux = dividendo(listaR,i)/divisor(listaR)
-        aux = aux * aux
-        w = aux * listaTol[i]
-        w = w*w
+        aux = aux **2
+        w = aux * (listaTol[i]/100)
+        w = w**2
         wRes += w
+    return wRes
 
 def main():
     print("Calculadora de incertidumbres")
@@ -105,12 +108,12 @@ def main():
         numResistores = int(insertaValor("Cuantos resistores hay en esta malla? "))
         for j in range(0,numResistores):
             resistoresMalla.append(insertaValor(cadenita("Resistencia ",j+1,": ")))
-            toleranciaMalla.append(insertaValor(cadenita("Tolerncia [%] ",j+1,": "))/100)
+            toleranciaMalla.append(insertaValor(cadenita("Tolerncia [%] ",j+1,": ")))
         resistencia.append(paralelo(resistoresMalla))
         toleranciaLista.append(tolerancia(resistoresMalla,toleranciaMalla))
         resistoresMalla.clear
         toleranciaMalla.clear
-    print("La resistencia es: ",serie(resistencia)," con una tolerancia de +-: ",(serie(toleranciaLista))**0.5)
+    print("La resistencia es: ",serie(resistencia)," con una tolerancia de : ",((serie(toleranciaLista))**0.5)*100,"%")
         
 
 if __name__ == "__main__":
